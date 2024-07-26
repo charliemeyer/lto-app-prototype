@@ -2,8 +2,8 @@
 
 import { Suspense, use } from "react";
 
-export async function fetchAirtableData() {
-    const response = await fetch("http://localhost:3000/api/companies", {
+export async function getAllData(table: "companies" | "contacts") {
+    const response = await fetch(`/api/companies/${table}`, {
         cache: "no-cache",
     });
     if (!response.ok) {
@@ -14,7 +14,7 @@ export async function fetchAirtableData() {
 }
 
 const CompanyList = () => {
-    const data = use(fetchAirtableData());
+    const data = use(getAllData("companies"));
     return (
         <Suspense fallback={<p>Loading...</p>}>
             {data.length === 0 ? (
