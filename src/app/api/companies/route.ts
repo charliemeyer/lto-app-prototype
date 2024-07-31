@@ -24,10 +24,10 @@ export async function POST(req: Request, res: Response) {
         (err, record) => {
             if (err) {
                 console.error("Error adding row to the company table:", err);
-                return res.ok;
             }
 
             console.log("Row added successfully with ID:", record?.id);
+            return res.ok;
         }
     );
 }
