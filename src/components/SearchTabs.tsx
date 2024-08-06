@@ -1,36 +1,18 @@
 "use client";
 
 import { Company, Contact, getCompanies, getContacts } from "@/utils/api";
+import { useCompanies, useContacts } from "@/utils/hooks";
 import { useCallback, useEffect, useState } from "react";
 
 export const SearchTabs = () => {
-    const [companies, setCompanies] = useState<Company[]>([]);
-    const [contacts, setContacts] = useState<Contact[]>([]);
-    const [loading, setLoading] = useState(false);
+    const { loading: loadingCompanies, companies } = useCompanies();
+    const { loading: loadingContacts, contacts } = useContacts();
     const [activeTab, setActiveTab] = useState<"companies" | "contacts">(
         "companies"
     );
 
-    const fetchData = useCallback(async () => {
-        if (companies.length === 0) {
-            setLoading(true);
-        }
-        const [newCompanies, newContacts] = await Promise.all([
-            getCompanies(),
-            getContacts(),
-        ]);
-        setCompanies(newCompanies);
-        setContacts(newContacts);
-        setLoading(false);
-    }, [companies, contacts, activeTab]);
-
-    useEffect(() => {
-        fetchData();
-        const interval = setInterval(fetchData, 10000);
-        return () => clearInterval(interval);
-    }, []);
-
     const dataToShow = activeTab === "companies" ? companies : contacts;
+    const loading = loadingCompanies || loadingContacts;
 
     return (
         <div className="p-2">
@@ -53,7 +35,7 @@ export const SearchTabs = () => {
                 </div>
             </div>
             {loading && (
-                <div className="py-1 px-2 text-sm bg-gray-700 mb-2 rounded-full text-white w-fit mx-auto">
+                <div className="py-1 px-4 text-sm bg-black mb-2 rounded-full text-white w-fit mx-auto">
                     Loading...
                 </div>
             )}
