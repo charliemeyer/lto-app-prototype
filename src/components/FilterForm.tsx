@@ -37,7 +37,8 @@ const FilterForm = ({ fieldConfigs, filters, setFilters }: FilterFormProps) => {
     };
 
     return (
-        <div>
+        <div className="w-full flex flex-col gap-2">
+            <h2 className="text-lg font-bold text-center">Filter</h2>
             {localFilters.map((filter, index) => {
                 const field = fieldConfigs.find(
                     (f) => f.field === filter.field
@@ -45,11 +46,7 @@ const FilterForm = ({ fieldConfigs, filters, setFilters }: FilterFormProps) => {
                 return (
                     <div
                         key={index}
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginBottom: "8px",
-                        }}
+                        className="flex items-center w-full justify-between border rounded border-gray-300 p-2"
                     >
                         {field?.name}
                         {filter.field && (
@@ -64,7 +61,12 @@ const FilterForm = ({ fieldConfigs, filters, setFilters }: FilterFormProps) => {
                     </div>
                 );
             })}
-            <button onClick={handleApply}>Apply</button>
+            <button
+                onClick={handleApply}
+                className="border border-black rounded-lg mx-auto px-2 py-0.5"
+            >
+                Apply
+            </button>
         </div>
     );
 };

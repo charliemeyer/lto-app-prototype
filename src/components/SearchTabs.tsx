@@ -17,6 +17,7 @@ import { useMemo, useState } from "react";
 import FilterForm, { FilterConfig } from "./FilterForm";
 import { LoadingIndicator } from "./LoadingIndicator";
 import SortForm, { SortConfig } from "./SortForm";
+import { Modal } from "./Modal";
 
 export const SearchTabs = () => {
     const { loading: loadingCompanies, companies } = useCompanies();
@@ -36,6 +37,9 @@ export const SearchTabs = () => {
             direction: "none",
         },
     ]);
+
+    const [showFilters, setShowFilters] = useState(false);
+    const [showSorts, setShowSorts] = useState(false);
 
     const [contactSorts, setContactSorts] = useState<SortConfig[]>([
         { field: "lastName", direction: "ascending" },
@@ -109,47 +113,53 @@ export const SearchTabs = () => {
             </div>
             <div className="flex gap-1 mb-2">
                 <button
-                    onClick={() => {}}
+                    onClick={() => setShowFilters(true)}
                     className="px-2 py-0.5 border rounded-lg border-gray-700 text-gray-700 flex items-center gap-0.5"
                 >
                     <AdjustmentsHorizontalIcon className="h-4 w-4" />
                     Filter
                 </button>
                 <button
-                    onClick={() => {}}
+                    onClick={() => setShowSorts(true)}
                     className="px-2 py-0.5 border rounded-lg border-gray-700 text-gray-700 flex items-center gap-0.5"
                 >
                     <BarsArrowDownIcon className="h-4 w-4" />
                     Sort
                 </button>
             </div>
-            {activeTab === "companies" && (
-                <div>
-                    <FilterForm
-                        fieldConfigs={CompanyFields}
-                        filters={companyFilters}
-                        setFilters={setCompanyFilters}
-                    />
-                    <SortForm
-                        fieldConfigs={CompanyFields}
-                        sorts={companySorts}
-                        setSorts={setCompanySorts}
-                    />
-                </div>
+            {showFilters && (
+                <Modal onClose={() => setShowFilters(false)}>
+                    {activeTab === "companies" ? (
+                        <FilterForm
+                            fieldConfigs={CompanyFields}
+                            filters={companyFilters}
+                            setFilters={setCompanyFilters}
+                        />
+                    ) : (
+                        <FilterForm
+                            fieldConfigs={ContactFields}
+                            filters={contactFilters}
+                            setFilters={setContactFilters}
+                        />
+                    )}
+                </Modal>
             )}
-            {activeTab === "contacts" && (
-                <div>
-                    <FilterForm
-                        fieldConfigs={ContactFields}
-                        filters={contactFilters}
-                        setFilters={setContactFilters}
-                    />
-                    <SortForm
-                        fieldConfigs={ContactFields}
-                        sorts={contactSorts}
-                        setSorts={setContactSorts}
-                    />
-                </div>
+            {showSorts && (
+                <Modal onClose={() => setShowSorts(false)}>
+                    {activeTab === "companies" ? (
+                        <SortForm
+                            fieldConfigs={CompanyFields}
+                            sorts={companySorts}
+                            setSorts={setCompanySorts}
+                        />
+                    ) : (
+                        <SortForm
+                            fieldConfigs={ContactFields}
+                            sorts={contactSorts}
+                            setSorts={setContactSorts}
+                        />
+                    )}
+                </Modal>
             )}
             {loading && <LoadingIndicator />}
             <div className="flex flex-col gap-2">

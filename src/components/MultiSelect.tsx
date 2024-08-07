@@ -18,9 +18,9 @@ const MultiSelect = ({
     };
 
     return (
-        <div className="border rounded p-2">
+        <div className="flex items-center gap-4">
             {options.map((option) => (
-                <div key={option} className="flex items-center space-x-2">
+                <div key={option} className="flex items-center space-x-1">
                     <input
                         type="checkbox"
                         id={option.toString()}

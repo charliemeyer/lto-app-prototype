@@ -60,7 +60,6 @@ export const getSortedAndFilteredItems = (
     sorts: SortConfig[],
     searchTerm: string
 ) => {
-    console.log(items, filters, sorts);
     const filteredItems = items.filter((item) => {
         return (
             filters.every((filter) => {

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 export type SortConfig = {
     field: string;
-    direction: "ascending" | "descending";
+    direction: "ascending" | "descending" | "none";
 };
 
 type SortFormProps = {
@@ -21,7 +21,7 @@ const SortForm = ({ fieldConfigs, sorts, setSorts }: SortFormProps) => {
 
     const handleDirectionChange = (
         index: number,
-        direction: "ascending" | "descending"
+        direction: "ascending" | "descending" | "none"
     ) => {
         const newSorts = [...localSorts];
         newSorts[index].direction = direction;
@@ -33,21 +33,18 @@ const SortForm = ({ fieldConfigs, sorts, setSorts }: SortFormProps) => {
     };
 
     return (
-        <div>
+        <div className="w-full flex flex-col mt-4 gap-2">
+            <h2 className="text-lg font-bold text-center">Sort</h2>
             {localSorts.map((sort, index) => {
                 const field = fieldConfigs.find((f) => f.field === sort.field);
                 return (
                     <div
                         key={index}
-                        style={{
-                            display: "flex",
-                            alignItems: "center",
-                            marginBottom: "8px",
-                        }}
+                        className="flex justify-between w-full items-center"
                     >
                         {field?.name}
                         <select
-                            value={sort?.direction}
+                            value={sort?.direction || "none"}
                             onChange={(e) => {
                                 handleDirectionChange(
                                     index,
@@ -55,6 +52,7 @@ const SortForm = ({ fieldConfigs, sorts, setSorts }: SortFormProps) => {
                                 );
                             }}
                             defaultValue={"Select a direction"}
+                            className="border border-gray-500 rounded px-1 py-0.5"
                         >
                             <option value="none">None</option>
                             <option value="ascending">Ascending</option>
@@ -63,7 +61,11 @@ const SortForm = ({ fieldConfigs, sorts, setSorts }: SortFormProps) => {
                     </div>
                 );
             })}
-            <button type="button" onClick={handleApply}>
+            <button
+                type="button"
+                onClick={handleApply}
+                className="border border-black rounded-lg mx-auto px-2 py-0.5"
+            >
                 Apply
             </button>
         </div>
