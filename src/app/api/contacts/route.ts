@@ -6,8 +6,6 @@ const base = new Airtable({ apiKey: AIRTABLE_API_TOKEN }).base(
 );
 
 export async function GET(req: Request, res: Response) {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
     try {
         const records = await base("Contacts").select({}).all();
         const data = records.map((record) => ({

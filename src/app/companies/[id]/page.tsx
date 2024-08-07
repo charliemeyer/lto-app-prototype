@@ -1,7 +1,12 @@
 "use client";
 import { Header } from "@/components/Header";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useCompanies, useContacts } from "@/utils/hooks";
 import Link from "next/link";
+import { format } from "d3-format";
+
+// s format is SI, don't want giga dollars lol
+const moneyFormat = (v: number) => format("$~s")(v).replaceAll("G", "B");
 
 const CompanyDetailsView = ({ id }: { id: string }) => {
     const { companies, loading: companiesLoading } = useCompanies();
@@ -18,21 +23,30 @@ const CompanyDetailsView = ({ id }: { id: string }) => {
     }
     return (
         <div className="p-2">
-            <h2 className="text-xl">{company.name}</h2>
-            <div className="flex flex-col gap-2">
-                <div>{company.boothNumber}</div>
-                <div>{company.preNotes}</div>
+            <h2 className="text-2xl text-center">{company.name}</h2>
+            <div className="flex flex-col gap-1">
+                <div>Booth {company.boothNumber}</div>
+                <Link className="underline" href={company.domain}>
+                    {company.domain}
+                </Link>
+                <div>{moneyFormat(company.annualRevenue)} annual revenue</div>
+                <div>Priority {company.priority}</div>
+                <div>{company.isAFit}</div>
+                <div className="text-sm text-gray-500">{company.preNotes}</div>
             </div>
-            <div className="p-2 border border-gray-500 rounded-lg">
-                <h2 className="text-lg">Employees</h2>
-                <div className="flex flex-col gap-2">
-                    {contactsLoading && <div>Loading...</div>}
+            <div className="py-1 border-t border-gray-500">
+                <h2 className="text-lg mb-2">Employees</h2>
+                <div className="flex flex-col gap-1">
+                    {contactsLoading && <LoadingIndicator />}
                     {!contactsLoading && companyContacts.length === 0 && (
                         <div>No contacts for {company.name} found</div>
                     )}
                     {companyContacts.map((contact) => {
                         return (
-                            <Link href={`/contacts/${contact.id}`}>
+                            <Link
+                                href={`/contacts/${contact.id}`}
+                                className="underline"
+                            >
                                 {contact.name} ({contact.jobTitle})
                             </Link>
                         );

@@ -1,13 +1,14 @@
 "use client";
 
 import { Header } from "@/components/Header";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 import { useContacts } from "@/utils/hooks";
 
 const ContactDetailsView = ({ id }: { id: string }) => {
     const { contacts, loading } = useContacts();
     const company = contacts.find((c) => c.id === id);
     if (loading) {
-        return <div>Loading...</div>;
+        return <LoadingIndicator />;
     }
     if (!company) {
         return <div>Contact not found</div>;
