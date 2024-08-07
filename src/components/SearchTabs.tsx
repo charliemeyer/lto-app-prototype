@@ -1,6 +1,10 @@
 "use client";
 
-import { getSortedAndFilteredItems } from "@/utils/fields";
+import {
+    CompanyFields,
+    ContactFields,
+    getSortedAndFilteredItems,
+} from "@/utils/fields";
 import { useCompanies, useContacts } from "@/utils/hooks";
 import {
     AdjustmentsHorizontalIcon,
@@ -10,9 +14,9 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { FilterConfig } from "./FilterForm";
+import FilterForm, { FilterConfig } from "./FilterForm";
 import { LoadingIndicator } from "./LoadingIndicator";
-import { SortConfig } from "./SortForm";
+import SortForm, { SortConfig } from "./SortForm";
 
 export const SearchTabs = () => {
     const { loading: loadingCompanies, companies } = useCompanies();
@@ -22,15 +26,21 @@ export const SearchTabs = () => {
     );
     const [filterTerm, setFilterTerm] = useState("");
     const [companySorts, setCompanySorts] = useState<SortConfig[]>([
-        { field: "name", direction: "ascending" },
+        { field: "name", direction: "descending" },
     ]);
 
     const [contactSorts, setContactSorts] = useState<SortConfig[]>([
         { field: "lastName", direction: "ascending" },
     ]);
 
-    const [companyFilters, setCompanyFilters] = useState<FilterConfig[]>([]);
-    const [contactFilters, setContactFilters] = useState<FilterConfig[]>([]);
+    const [companyFilters, setCompanyFilters] = useState<FilterConfig[]>([
+        { field: "isAFit", values: [] },
+        { field: "priority", values: [] },
+        { field: "met", values: [] },
+    ]);
+    const [contactFilters, setContactFilters] = useState<FilterConfig[]>([
+        { field: "status", values: [] },
+    ]);
 
     const companiesToShow = useMemo(() => {
         return getSortedAndFilteredItems(
@@ -105,6 +115,34 @@ export const SearchTabs = () => {
                     Sort
                 </button>
             </div>
+            {activeTab === "companies" && (
+                <div>
+                    <FilterForm
+                        fieldConfigs={CompanyFields}
+                        filters={companyFilters}
+                        setFilters={setCompanyFilters}
+                    />
+                    <SortForm
+                        fieldConfigs={CompanyFields}
+                        sorts={companySorts}
+                        setSorts={setCompanySorts}
+                    />
+                </div>
+            )}
+            {activeTab === "contacts" && (
+                <div>
+                    <FilterForm
+                        fieldConfigs={ContactFields}
+                        filters={contactFilters}
+                        setFilters={setContactFilters}
+                    />
+                    <SortForm
+                        fieldConfigs={ContactFields}
+                        sorts={contactSorts}
+                        setSorts={setContactSorts}
+                    />
+                </div>
+            )}
             {loading && <LoadingIndicator />}
             <div className="flex flex-col gap-2">
                 {dataToShow.map((record, index) => (

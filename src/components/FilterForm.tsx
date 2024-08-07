@@ -1,5 +1,6 @@
 import { FieldConfig } from "@/utils/fields";
 import React, { useState, useEffect } from "react";
+import MultiSelect from "./MultiSelect";
 
 export type FilterConfig = {
     field: string;
@@ -31,74 +32,38 @@ const FilterForm = ({ fieldConfigs, filters, setFilters }: FilterFormProps) => {
         setLocalFilters(newFilters);
     };
 
-    const handleAddFilter = () => {
-        setLocalFilters([...localFilters, { field: "", values: [] }]);
-    };
-
-    const handleRemoveFilter = (index: number) => {
-        const newFilters = [...localFilters];
-        newFilters.splice(index, 1);
-        setLocalFilters(newFilters);
-    };
-
     const handleApply = () => {
         setFilters(localFilters);
     };
 
     return (
         <div>
-            <h3>Filter Configuration</h3>
-            {localFilters.map((filter, index) => (
-                <div
-                    key={index}
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: "8px",
-                    }}
-                >
-                    <select
-                        value={filter.field}
-                        onChange={(e) =>
-                            handleFieldChange(index, e.target.value)
-                        }
+            {localFilters.map((filter, index) => {
+                const field = fieldConfigs.find(
+                    (f) => f.field === filter.field
+                );
+                return (
+                    <div
+                        key={index}
+                        style={{
+                            display: "flex",
+                            alignItems: "center",
+                            marginBottom: "8px",
+                        }}
                     >
-                        <option value="">Select field</option>
-                        {fieldConfigs
-                            .filter((fc) => fc.filter && fc.values)
-                            .map((fc) => (
-                                <option key={fc.field} value={fc.field}>
-                                    {fc.name}
-                                </option>
-                            ))}
-                    </select>
-                    {filter.field && (
-                        <MultiSelect
-                            options={
-                                fieldConfigs.find(
-                                    (fc) => fc.field === filter.field
-                                )?.values || []
-                            }
-                            selectedValues={filter.values}
-                            onChange={(values) =>
-                                handleValuesChange(index, values)
-                            }
-                        />
-                    )}
-                    <button
-                        type="button"
-                        onClick={() => handleRemoveFilter(index)}
-                    >
-                        Remove
-                    </button>
-                </div>
-            ))}
-            <button type="button" onClick={handleAddFilter}>
-                Add Filter
-            </button>
-            <button type="button" onClick={handleApply}>
-                Apply Filters
-            </button>
+                        {field?.name}
+                        {filter.field && (
+                            <MultiSelect
+                                options={field?.values || []}
+                                selectedOptions={filter.values}
+                                onSelect={(values) =>
+                                    handleValuesChange(index, values)
+                                }
+                            />
+                        )}
+                    </div>
+                );
+            })}
         </div>
     );
 };

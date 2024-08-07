@@ -1,23 +1,40 @@
-const MultiSelect: React.FC<{
+import React from "react";
+
+const MultiSelect = ({
+    options,
+    selectedOptions,
+    onSelect,
+}: {
     options: string[];
-    selectedValues: string[];
-    onChange: (selected: string[]) => void;
-}> = ({ options, selectedValues, onChange }) => {
-    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedOptions = Array.from(
-            e.target.selectedOptions,
-            (option) => option.value
-        );
-        onChange(selectedOptions);
+    selectedOptions: string[];
+    onSelect: (v: string[]) => void;
+}) => {
+    const handleSelect = (option: string) => {
+        if (selectedOptions.includes(option)) {
+            onSelect(selectedOptions.filter((item) => item !== option));
+        } else {
+            onSelect([...selectedOptions, option]);
+        }
     };
 
     return (
-        <select multiple value={selectedValues} onChange={handleSelectChange}>
+        <div className="border rounded p-2">
             {options.map((option) => (
-                <option key={option} value={option}>
-                    {option}
-                </option>
+                <div key={option} className="flex items-center space-x-2">
+                    <input
+                        type="checkbox"
+                        id={option}
+                        checked={selectedOptions.includes(option)}
+                        onChange={() => handleSelect(option)}
+                        className="form-checkbox h-4 w-4 text-blue-600"
+                    />
+                    <label htmlFor={option} className="select-none">
+                        {option}
+                    </label>
+                </div>
             ))}
-        </select>
+        </div>
     );
 };
+
+export default MultiSelect;
