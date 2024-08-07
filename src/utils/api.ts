@@ -1,5 +1,5 @@
 export async function getRecords(table: "companies" | "contacts") {
-    const response = await fetch(`http://localhost:3000/api/${table}`, {
+    const response = await fetch(`/api/${table}`, {
         cache: "no-cache",
     });
     if (!response.ok) {
@@ -84,7 +84,7 @@ export const getContacts = async (): Promise<Contact[]> => {
 };
 
 export const addCompany = (fields: Company) => {
-    fetch("http://localhost:3000/api/companies", {
+    fetch("/api/companies", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export const addCompany = (fields: Company) => {
 };
 
 export const addContact = (fields: Contact) => {
-    fetch("http://localhost:3000/api/contacts", {
+    fetch("/api/contacts", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
