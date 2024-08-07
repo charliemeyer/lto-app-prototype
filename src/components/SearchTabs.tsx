@@ -1,10 +1,18 @@
 "use client";
 
-import { Company, Contact, getCompanies, getContacts } from "@/utils/api";
+import { getSortedAndFilteredItems } from "@/utils/fields";
 import { useCompanies, useContacts } from "@/utils/hooks";
+import {
+    AdjustmentsHorizontalIcon,
+    BarsArrowDownIcon,
+    MagnifyingGlassIcon,
+    XCircleIcon,
+} from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useMemo, useState } from "react";
+import { FilterConfig } from "./FilterForm";
 import { LoadingIndicator } from "./LoadingIndicator";
+import { SortConfig } from "./SortForm";
 
 export const SearchTabs = () => {
     const { loading: loadingCompanies, companies } = useCompanies();
@@ -12,9 +20,38 @@ export const SearchTabs = () => {
     const [activeTab, setActiveTab] = useState<"companies" | "contacts">(
         "companies"
     );
+    const [filterTerm, setFilterTerm] = useState("");
+    const [companySorts, setCompanySorts] = useState<SortConfig[]>([
+        { field: "name", direction: "ascending" },
+    ]);
 
-    const dataToShow = activeTab === "companies" ? companies : contacts;
+    const [contactSorts, setContactSorts] = useState<SortConfig[]>([
+        { field: "lastName", direction: "ascending" },
+    ]);
+
+    const [companyFilters, setCompanyFilters] = useState<FilterConfig[]>([]);
+    const [contactFilters, setContactFilters] = useState<FilterConfig[]>([]);
+
+    const companiesToShow = useMemo(() => {
+        return getSortedAndFilteredItems(
+            companies,
+            companyFilters,
+            companySorts,
+            filterTerm
+        );
+    }, [companyFilters, companySorts, filterTerm, companies]);
+
+    const contactsToShow = useMemo(() => {
+        return getSortedAndFilteredItems(
+            contacts,
+            contactFilters,
+            contactSorts,
+            filterTerm
+        );
+    }, [contactFilters, contactSorts, filterTerm, contacts]);
     const loading = loadingCompanies || loadingContacts;
+    const dataToShow =
+        activeTab === "companies" ? companiesToShow : contactsToShow;
 
     return (
         <div className="p-2">
@@ -35,6 +72,38 @@ export const SearchTabs = () => {
                 >
                     Contacts
                 </div>
+            </div>
+            <div className="rounded-lg border border-gray-500 px-2 py-1 flex items-center gap-1 mb-2">
+                <MagnifyingGlassIcon className="w-4 h-4" />
+                <input
+                    type="text"
+                    value={filterTerm}
+                    onChange={(e) => setFilterTerm(e.currentTarget.value)}
+                    className="w-full focus:outline-none"
+                    placeholder="Search..."
+                />
+                {filterTerm.length > 0 && (
+                    <XCircleIcon
+                        className="w-6 h-6"
+                        onClick={() => setFilterTerm("")}
+                    />
+                )}
+            </div>
+            <div className="flex gap-1 mb-2">
+                <button
+                    onClick={() => {}}
+                    className="px-2 py-0.5 border rounded-lg border-gray-700 text-gray-700 flex items-center gap-0.5"
+                >
+                    <AdjustmentsHorizontalIcon className="h-4 w-4" />
+                    Filter
+                </button>
+                <button
+                    onClick={() => {}}
+                    className="px-2 py-0.5 border rounded-lg border-gray-700 text-gray-700 flex items-center gap-0.5"
+                >
+                    <BarsArrowDownIcon className="h-4 w-4" />
+                    Sort
+                </button>
             </div>
             {loading && <LoadingIndicator />}
             <div className="flex flex-col gap-2">
