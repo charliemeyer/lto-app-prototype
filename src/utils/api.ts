@@ -47,7 +47,7 @@ export const getCompanies = async (): Promise<Company[]> => {
 
     return rawData.map((c: any) => {
         return {
-            id: c["Id"],
+            id: c["id"],
             name: c.Name as string,
             domain: c["Website"],
             preNotes: c["Pre Show Notes"],
@@ -69,7 +69,7 @@ export const getContacts = async (): Promise<Contact[]> => {
             name: `${c["First Name"]} ${c["Last Name"]}` as string,
             firstName: c["First Name"],
             lastName: c["Last Name"],
-            id: c["Id"],
+            id: c["id"],
             email,
             companyDomain: email.split("@")?.[1] || "Unknown",
             archived: c["Archived"],

@@ -10,7 +10,10 @@ export async function GET(req: Request, res: Response) {
 
     try {
         const records = await base("Contacts").select({}).all();
-        const data = records.map((record) => record.fields);
+        const data = records.map((record) => ({
+            ...record.fields,
+            id: record.id,
+        }));
 
         return Response.json(data);
     } catch (error) {

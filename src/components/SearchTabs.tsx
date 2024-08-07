@@ -2,6 +2,7 @@
 
 import { Company, Contact, getCompanies, getContacts } from "@/utils/api";
 import { useCompanies, useContacts } from "@/utils/hooks";
+import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 
 export const SearchTabs = () => {
@@ -41,12 +42,11 @@ export const SearchTabs = () => {
             )}
             <div className="flex flex-col gap-2">
                 {dataToShow.map((record, index) => (
-                    <div
-                        key={index}
-                        className="flex flex-row gap-2 px-4 py-2 border border-gray-300 rounded-full hover:border-black cursor-pointer"
-                    >
-                        {record.name}
-                    </div>
+                    <Link href={`/${activeTab}/${record.id}`} key={record.id}>
+                        <div className="flex flex-row gap-2 px-4 py-2 border border-gray-300 rounded-full hover:border-black cursor-pointer">
+                            {record.name}
+                        </div>
+                    </Link>
                 ))}
             </div>
         </div>

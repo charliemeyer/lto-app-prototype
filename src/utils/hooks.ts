@@ -3,7 +3,7 @@ import { Company, Contact, getCompanies, getContacts } from "./api";
 
 const useCompanies = () => {
     const [companies, setCompanies] = useState<Company[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const fetchCompanies = useCallback(async () => {
         console.log("fetching companies");
@@ -15,7 +15,7 @@ const useCompanies = () => {
 
     useEffect(() => {
         fetchCompanies();
-        const interval = setInterval(fetchCompanies, 60000);
+        const interval = setInterval(fetchCompanies, 120000);
         return () => clearInterval(interval);
     }, []);
 
@@ -24,7 +24,7 @@ const useCompanies = () => {
 
 const useContacts = () => {
     const [contacts, setContacts] = useState<Contact[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const fetchContacts = useCallback(async () => {
         console.log("fetching contacts");
@@ -36,7 +36,7 @@ const useContacts = () => {
 
     useEffect(() => {
         fetchContacts();
-        const interval = setInterval(fetchContacts, 60000);
+        const interval = setInterval(fetchContacts, 120000);
         return () => clearInterval(interval);
     }, []);
 
