@@ -4,7 +4,7 @@ import MultiSelect from "./MultiSelect";
 
 export type FilterConfig = {
     field: string;
-    values: string[];
+    values: (string | number)[];
 };
 
 type FilterFormProps = {
@@ -26,7 +26,7 @@ const FilterForm = ({ fieldConfigs, filters, setFilters }: FilterFormProps) => {
         setLocalFilters(newFilters);
     };
 
-    const handleValuesChange = (index: number, values: string[]) => {
+    const handleValuesChange = (index: number, values: (string | number)[]) => {
         const newFilters = [...localFilters];
         newFilters[index].values = values;
         setLocalFilters(newFilters);
@@ -64,6 +64,7 @@ const FilterForm = ({ fieldConfigs, filters, setFilters }: FilterFormProps) => {
                     </div>
                 );
             })}
+            <button onClick={handleApply}>Apply</button>
         </div>
     );
 };

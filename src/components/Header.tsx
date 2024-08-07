@@ -18,7 +18,7 @@ export const Header = ({
     hideSearch?: string;
 }) => {
     return (
-        <div className="flex py-1 p-1 border-b border-gray-300 items-center sticky top-0 right-0 left-0">
+        <div className="flex py-1 p-1 border-b border-gray-300 bg-white items-center sticky top-0 right-0 left-0">
             {!hideBack && (
                 <button
                     className="rounded-full absolute left-0.5 text-gray-800 flex items-center justify-center"

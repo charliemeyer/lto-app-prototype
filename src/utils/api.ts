@@ -56,7 +56,7 @@ export const getCompanies = async (): Promise<Company[]> => {
             annualRevenue: c["Annual Revenue"],
             isAFit: c["Is a fit"],
             priority: c["Priority"],
-            archived: c["Archived"],
+            archived: c["Archived"] === "Yes",
         } as Company;
     });
 };
@@ -72,13 +72,13 @@ export const getContacts = async (): Promise<Contact[]> => {
             id: c["id"],
             email,
             companyDomain: email.split("@")?.[1] || "Unknown",
-            archived: c["Archived"],
             status: c["Status"],
             duringNotes: c["During Show Notes"],
             jobTitle: c["Job Title"],
             linkedInHeadshotUrl: c["Linkedin Headshot URL"],
             linkedInUrl: c["Linkedin URL"],
             preNotes: c["Pre Show Notes"],
+            archived: c["Archived"] === "Yes",
         } as Contact;
     });
 };

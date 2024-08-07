@@ -5,7 +5,7 @@ import { SortConfig } from "@/components/SortForm";
 export type FieldConfig = {
     field: string;
     name: string;
-    values?: string[];
+    values?: (string | number)[];
 };
 
 export const CompanyFields: FieldConfig[] = [
@@ -24,12 +24,12 @@ export const CompanyFields: FieldConfig[] = [
     {
         field: "isAFit",
         name: "Is a Fit",
-        values: ["Yes", "No"],
+        values: ["Fit", "Not a Fit"],
     },
     {
         field: "priority",
         name: "Priority",
-        values: ["1", "2", "3", "4", "5"],
+        values: [1, 2, 3, 4, 5],
     },
     {
         field: "met",
@@ -60,6 +60,7 @@ export const getSortedAndFilteredItems = (
     sorts: SortConfig[],
     searchTerm: string
 ) => {
+    console.log(items, filters, sorts);
     const filteredItems = items.filter((item) => {
         return (
             filters.every((filter) => {
@@ -76,11 +77,13 @@ export const getSortedAndFilteredItems = (
 
     const sortedItems = filteredItems.sort((a: any, b: any) => {
         for (const sort of sorts) {
-            if (a[sort.field] < b[sort.field]) {
-                return sort.direction === "ascending" ? -1 : 1;
-            }
-            if (a[sort.field] > b[sort.field]) {
-                return sort.direction === "ascending" ? 1 : -1;
+            if (sort.direction !== "none") {
+                if (a[sort.field] < b[sort.field]) {
+                    return sort.direction === "ascending" ? -1 : 1;
+                }
+                if (a[sort.field] > b[sort.field]) {
+                    return sort.direction === "ascending" ? 1 : -1;
+                }
             }
         }
         return 0;

@@ -26,7 +26,15 @@ export const SearchTabs = () => {
     );
     const [filterTerm, setFilterTerm] = useState("");
     const [companySorts, setCompanySorts] = useState<SortConfig[]>([
-        { field: "name", direction: "descending" },
+        { field: "name", direction: "ascending" },
+        {
+            field: "boothNumber",
+            direction: "none",
+        },
+        {
+            field: "annualRevenue",
+            direction: "none",
+        },
     ]);
 
     const [contactSorts, setContactSorts] = useState<SortConfig[]>([

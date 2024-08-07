@@ -46,6 +46,7 @@ const CompanyDetailsView = ({ id }: { id: string }) => {
                             <Link
                                 href={`/contacts/${contact.id}`}
                                 className="underline"
+                                key={contact.id}
                             >
                                 {contact.name} ({contact.jobTitle})
                             </Link>
