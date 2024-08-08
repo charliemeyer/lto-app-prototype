@@ -45,12 +45,15 @@ const ContactDetailsView = ({ id }: { id: string }) => {
                 <div>
                     <Link
                         className="underline"
-                        href={`mailto:${contact.email}`}
+                        href={`mailto:${contact.email || ""}`}
                     >
                         {contact.email}
                     </Link>{" "}
                     |{" "}
-                    <Link className="underline" href={contact.linkedInUrl}>
+                    <Link
+                        className="underline"
+                        href={contact.linkedInUrl || ""}
+                    >
                         LinkedIn
                     </Link>
                 </div>
@@ -82,7 +85,7 @@ const ContactDetailsView = ({ id }: { id: string }) => {
                         Pre-show notes
                     </span>
                     <br></br>
-                    {contact.preNotes}
+                    {contact.preNotes || "No notes found"}
                 </div>
                 <div className="flex flex-col gap-1">
                     <span className="text-sm text-gray-400">

@@ -5,6 +5,7 @@ import { SortConfig } from "@/components/SortForm";
 export type FieldConfig = {
     field: string;
     name: string;
+    type?: "number" | "email";
     values?: (string | number)[];
 };
 
@@ -14,12 +15,17 @@ export const CompanyFields: FieldConfig[] = [
         name: "Name",
     },
     {
+        field: "domain",
+        name: "Website",
+    },
+    {
         field: "boothNumber",
         name: "Booth Number",
     },
     {
         field: "annualRevenue",
         name: "Annual Revenue",
+        type: "number",
     },
     {
         field: "isAFit",
@@ -30,6 +36,7 @@ export const CompanyFields: FieldConfig[] = [
         field: "priority",
         name: "Priority",
         values: [1, 2, 3, 4, 5],
+        type: "number",
     },
     {
         field: "met",
@@ -38,7 +45,7 @@ export const CompanyFields: FieldConfig[] = [
     },
 ];
 
-export const ContactFields = [
+export const ContactFields: FieldConfig[] = [
     {
         field: "firstName",
         name: "First Name",
@@ -46,6 +53,15 @@ export const ContactFields = [
     {
         field: "lastName",
         name: "Last Name",
+    },
+    {
+        field: "email",
+        name: "Email",
+        type: "email",
+    },
+    {
+        field: "jobTitle",
+        name: "Job Title",
     },
     {
         field: "status",

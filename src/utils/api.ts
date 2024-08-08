@@ -110,19 +110,20 @@ export const getContacts = async (): Promise<Contact[]> => {
     });
 };
 
-export const addCompany = (fields: Company) => {
+export const addCompany = async (fields: Company) => {
     const postBody: Partial<Company> = {};
     Object.entries(companyFieldNames).forEach(([jsKey, airtableKey]) => {
         // @ts-ignore
         postBody[airtableKey] = fields[jsKey];
     });
-    fetch("/api/companies", {
+    const res = await fetch("/api/companies", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(postBody),
     });
+    return await res.json();
 };
 
 export const patchCompany = (id: string, fields: Partial<Company>) => {
@@ -145,19 +146,20 @@ export const patchCompany = (id: string, fields: Partial<Company>) => {
     });
 };
 
-export const addContact = (fields: Contact) => {
+export const addContact = async (fields: Contact) => {
     const postBody: Partial<Contact> = {};
     Object.entries(contactFieldNames).forEach(([jsKey, airtableKey]) => {
         // @ts-ignore
         postBody[airtableKey] = fields[jsKey];
     });
-    fetch("/api/contacts", {
+    const res = await fetch("/api/contacts", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(postBody),
     });
+    return await res.json();
 };
 
 export const patchContact = (id: string, fields: Partial<Contact>) => {

@@ -34,9 +34,12 @@ export const Header = ({
                     <MagnifyingGlassCircleIcon className="h-8 w-8 stroke-1" />
                 </Link>
             )}
-            <button className="rounded-full absolute right-0.5 text-gray-800">
+            <Link
+                className="rounded-full absolute right-0.5 text-gray-800"
+                href="/addNew"
+            >
                 <PlusCircleIcon className="h-8 w-8 stroke-1" />
-            </button>
+            </Link>
         </div>
     );
 };
