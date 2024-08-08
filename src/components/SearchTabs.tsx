@@ -111,7 +111,7 @@ export const SearchTabs = () => {
                     />
                 )}
             </div>
-            <div className="flex gap-1 mb-2">
+            <div className="flex gap-1 mb-2 justify-center">
                 <button
                     onClick={() => setShowFilters(true)}
                     className="px-2 py-0.5 border rounded-lg border-gray-700 text-gray-700 flex items-center gap-0.5"
@@ -133,13 +133,19 @@ export const SearchTabs = () => {
                         <FilterForm
                             fieldConfigs={CompanyFields}
                             filters={companyFilters}
-                            setFilters={setCompanyFilters}
+                            setFilters={(fs) => {
+                                setCompanyFilters(fs);
+                                setShowFilters(false);
+                            }}
                         />
                     ) : (
                         <FilterForm
                             fieldConfigs={ContactFields}
                             filters={contactFilters}
-                            setFilters={setContactFilters}
+                            setFilters={(fs) => {
+                                setContactFilters(fs);
+                                setShowFilters(false);
+                            }}
                         />
                     )}
                 </Modal>
@@ -150,20 +156,31 @@ export const SearchTabs = () => {
                         <SortForm
                             fieldConfigs={CompanyFields}
                             sorts={companySorts}
-                            setSorts={setCompanySorts}
+                            setSorts={(ss) => {
+                                setCompanySorts(ss);
+                                setShowSorts(false);
+                            }}
                         />
                     ) : (
                         <SortForm
                             fieldConfigs={ContactFields}
                             sorts={contactSorts}
-                            setSorts={setContactSorts}
+                            setSorts={(ss) => {
+                                setContactSorts(ss);
+                                setShowSorts(false);
+                            }}
                         />
                     )}
                 </Modal>
             )}
             {loading && <LoadingIndicator />}
             <div className="flex flex-col gap-2">
-                {dataToShow.map((record, index) => (
+                {dataToShow.length === 0 && (
+                    <div className="py-4 w-full text-center">
+                        No {activeTab} found
+                    </div>
+                )}
+                {dataToShow.map((record) => (
                     <Link href={`/${activeTab}/${record.id}`} key={record.id}>
                         <div className="flex flex-row gap-2 px-4 py-2 border border-gray-400 rounded-full hover:border-black cursor-pointer">
                             {record.name}

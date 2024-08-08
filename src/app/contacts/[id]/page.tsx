@@ -2,14 +2,24 @@
 
 import { Header } from "@/components/Header";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
+import { patchContact } from "@/utils/api";
 import { useCompanies, useContacts } from "@/utils/hooks";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const ContactDetailsView = ({ id }: { id: string }) => {
     const { contacts, loading: contactLoading } = useContacts();
     const { companies, loading: companiesLoading } = useCompanies();
+    const [status, setStatus] = useState("");
+    const [duringNotes, setDuringNotes] = useState("");
     const contact = contacts.find((c) => c.id === id);
     const company = companies.find((c) => c.domain === contact?.companyDomain);
+    useEffect(() => {
+        if (contact) {
+            setStatus(contact.status);
+            setDuringNotes(contact.duringNotes);
+        }
+    }, [contact]);
     if (contactLoading) {
         return <LoadingIndicator />;
     }
@@ -44,8 +54,51 @@ const ContactDetailsView = ({ id }: { id: string }) => {
                         LinkedIn
                     </Link>
                 </div>
-                <div>{contact.status}</div>
-                <div>{contact.preNotes}</div>
+                <select
+                    onChange={async (e) => {
+                        const newValue = e.currentTarget.value;
+                        await patchContact(contact.id, {
+                            status: newValue,
+                        });
+                        if (
+                            newValue === "Met" &&
+                            company?.status === "Not Met"
+                        ) {
+                            await patchContact(company.id, {
+                                status: newValue,
+                            });
+                        }
+                        setStatus(newValue);
+                    }}
+                    value={status}
+                    className="border border-gray-500 rounded-lg w-fit px-2 py-0.5"
+                >
+                    <option value="Met">Met</option>
+                    <option value="Not Met">Not Met</option>
+                </select>
+
+                <div>
+                    <span className="text-sm text-gray-400">
+                        Pre-show notes
+                    </span>
+                    <br></br>
+                    {contact.preNotes}
+                </div>
+                <div className="flex flex-col gap-1">
+                    <span className="text-sm text-gray-400">
+                        During show notes
+                    </span>
+                    <textarea
+                        value={duringNotes}
+                        onBlur={() => {
+                            patchContact(contact.id, {
+                                duringNotes,
+                            });
+                        }}
+                        onChange={(e) => setDuringNotes(e.currentTarget.value)}
+                        className="rounded-lg border border-gray-500 px-2 py-0.5 w-full h-36"
+                    />
+                </div>
             </div>
         </div>
     );

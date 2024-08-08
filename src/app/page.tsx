@@ -6,7 +6,7 @@ import { SearchTabs } from "@/components/SearchTabs";
 const Home = () => {
     return (
         <>
-            <Header />
+            <Header hideBack hideSearch />
             <SearchTabs />
         </>
     );

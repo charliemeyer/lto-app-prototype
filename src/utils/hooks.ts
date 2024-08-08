@@ -6,7 +6,6 @@ const useCompanies = () => {
     const [loading, setLoading] = useState(true);
 
     const fetchCompanies = useCallback(async () => {
-        console.log("fetching companies");
         setLoading(true);
         const newCompanies = await getCompanies();
         setCompanies(newCompanies);
@@ -27,7 +26,6 @@ const useContacts = () => {
     const [loading, setLoading] = useState(true);
 
     const fetchContacts = useCallback(async () => {
-        console.log("fetching contacts");
         setLoading(true);
         const newContacts = await getContacts();
         setContacts(newContacts);

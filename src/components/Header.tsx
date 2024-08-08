@@ -9,13 +9,11 @@ import { ArrowLeftCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 export const Header = ({
-    title,
     hideSearch,
     hideBack,
 }: {
-    title?: string;
-    hideBack?: string;
-    hideSearch?: string;
+    hideBack?: boolean;
+    hideSearch?: boolean;
 }) => {
     return (
         <div className="flex py-1 p-1 border-b border-gray-300 bg-white items-center sticky top-0 right-0 left-0">

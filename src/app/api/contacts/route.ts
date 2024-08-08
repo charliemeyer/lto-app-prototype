@@ -1,31 +1,113 @@
 import Airtable from "airtable";
+import { NextRequest, NextResponse } from "next/server";
 
 const { AIRTABLE_API_TOKEN, AIRTABLE_BASE_ID } = process.env;
 const base = new Airtable({ apiKey: AIRTABLE_API_TOKEN }).base(
     AIRTABLE_BASE_ID!
 );
 
-export async function GET(req: Request, res: Response) {
+export async function GET(req: Request) {
     try {
-        const records = await base("Contacts").select({}).all();
-        const data = records.map((record) => ({
-            ...record.fields,
-            id: record.id,
-        }));
-
-        return Response.json(data);
+        const data = await new Promise((resolve, reject) => {
+            base("Contacts")
+                .select({})
+                .all((err, records) => {
+                    if (err) {
+                        console.error(
+                            "Error retrieving records from the contact table:",
+                            err
+                        );
+                        reject(err);
+                    } else {
+                        const data = (records || []).map((record) => ({
+                            ...record.fields,
+                            id: record.id,
+                        }));
+                        resolve(data);
+                    }
+                });
+        });
+        return new Response(JSON.stringify(data), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
     } catch (error) {
-        console.error(error);
+        console.error("Unexpected error:", error);
+        return new Response(
+            JSON.stringify({ error: "Unexpected error occurred" }),
+            {
+                status: 500,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
     }
 }
 
-export async function POST(req: Request, res: Response) {
-    base("Contacts").create({ Name: "Person " + Date.now() }, (err, record) => {
-        if (err) {
-            console.error("Error adding row to the contacts table:", err);
+export async function POST(req: Request) {
+    const fields = await req.json();
+    try {
+        const record = await new Promise((resolve, reject) => {
+            base("Contacts").create(fields, (err: any, record: any) => {
+                if (err) {
+                    console.error(
+                        "Error adding row to the contact table:",
+                        err
+                    );
+                    reject(err);
+                } else {
+                    console.log("Row added successfully with ID:", record?.id);
+                    resolve(record);
+                }
+            });
+        });
+        return new Response(JSON.stringify(record), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        });
+    } catch (error) {
+        console.error("Unexpected error:", error);
+        return new Response(
+            JSON.stringify({ error: "Unexpected error occurred" }),
+            {
+                status: 500,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+    }
+}
+
+export async function PATCH(req: NextRequest, res: NextResponse) {
+    try {
+        const { id, ...fieldsToUpdate } = await req.json();
+
+        if (!id) {
+            return Response.error();
         }
 
-        console.log("Row added successfully with ID:", record?.id);
-        return res.ok;
-    });
+        const record = await new Promise((resolve, reject) => {
+            base("Contacts").update(
+                id,
+                fieldsToUpdate,
+                (err: any, record: any) => {
+                    if (err) {
+                        console.error(
+                            "Error updating row in the contact table:",
+                            err
+                        );
+                        reject(err);
+                    } else {
+                        console.log(
+                            "Row updated successfully with ID:",
+                            record?.id
+                        );
+                        resolve(record);
+                    }
+                }
+            );
+        });
+        return Response.json(record);
+    } catch (error) {
+        console.error("Unexpected error:", error);
+        return Response.error();
+    }
 }

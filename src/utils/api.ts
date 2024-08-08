@@ -18,9 +18,10 @@ export interface Company {
     duringNotes: string;
     boothNumber: string;
     annualRevenue: number;
-    isAFit: boolean;
+    isAFit: string;
     priority: string;
     archived: boolean;
+    status: string;
 }
 
 export interface Contact {
@@ -40,87 +41,139 @@ export interface Contact {
     archived: boolean;
 }
 
-// Map schema from airtable to schema for JS
+const companyFieldNames: Record<keyof Company, string> = {
+    id: "id",
+    name: "Name",
+    domain: "Website",
+    preNotes: "Pre Show Notes",
+    duringNotes: "During Show Notes",
+    boothNumber: "Booth Number",
+    annualRevenue: "Annual Revenue",
+    isAFit: "Is a fit",
+    priority: "Priority",
+    status: "Status",
+    archived: "Archived",
+};
+
 export const getCompanies = async (): Promise<Company[]> => {
-    console.log("GETTING COMPANIES!");
     const rawData = await getRecords("companies");
 
     return rawData.map((c: any) => {
-        return {
-            id: c["id"],
-            name: c.Name as string,
-            domain: c["Website"],
-            preNotes: c["Pre Show Notes"],
-            duringNotes: c["During Show Notes"],
-            boothNumber: c["Booth Number"],
-            annualRevenue: c["Annual Revenue"],
-            isAFit: c["Is a fit"],
-            priority: c["Priority"],
-            archived: c["Archived"] === "Yes",
-        } as Company;
+        const toReturn: Partial<Company> = {};
+        Object.entries(companyFieldNames).forEach(([jsKey, airtableKey]) => {
+            if (jsKey === "archived") {
+                toReturn["archived"] = c["Archived"] === "Yes";
+            } else {
+                // @ts-ignore
+                toReturn[jsKey] = c[airtableKey];
+            }
+        });
+        return toReturn;
     });
+};
+
+const contactFieldNames: Record<keyof Contact, string> = {
+    id: "id",
+    firstName: "First Name",
+    lastName: "Last Name",
+    email: "Email",
+    preNotes: "Pre Show Notes",
+    duringNotes: "During Show Notes",
+    status: "Status",
+    companyDomain: "",
+    linkedInHeadshotUrl: "Linkedin Headshot URL",
+    linkedInUrl: "Linkedin URL",
+    name: "",
+    jobTitle: "Job Title",
+    archived: "Archived",
 };
 
 export const getContacts = async (): Promise<Contact[]> => {
     const rawData = await getRecords("contacts");
+
     return rawData.map((c: any) => {
-        const email = c["Email"];
-        return {
-            name: `${c["First Name"]} ${c["Last Name"]}` as string,
-            firstName: c["First Name"],
-            lastName: c["Last Name"],
-            id: c["id"],
-            email,
-            companyDomain: email.split("@")?.[1] || "Unknown",
-            status: c["Status"],
-            duringNotes: c["During Show Notes"],
-            jobTitle: c["Job Title"],
-            linkedInHeadshotUrl: c["Linkedin Headshot URL"],
-            linkedInUrl: c["Linkedin URL"],
-            preNotes: c["Pre Show Notes"],
-            archived: c["Archived"] === "Yes",
-        } as Contact;
+        const toReturn: Partial<Contact> = {};
+        Object.entries(contactFieldNames).forEach(([jsKey, airtableKey]) => {
+            if (jsKey === "archived") {
+                toReturn["archived"] = c["Archived"] === "Yes";
+            } else if (jsKey === "name") {
+                toReturn["name"] = `${c["First Name"]} ${c["Last Name"]}`;
+            } else if (jsKey === "companyDomain") {
+                toReturn["companyDomain"] =
+                    c["Email"].split("@")?.[1] || "Unknown";
+            } else {
+                // @ts-ignore
+                toReturn[jsKey] = c[airtableKey];
+            }
+        });
+        return toReturn;
     });
 };
 
 export const addCompany = (fields: Company) => {
+    const postBody: Partial<Company> = {};
+    Object.entries(companyFieldNames).forEach(([jsKey, airtableKey]) => {
+        // @ts-ignore
+        postBody[airtableKey] = fields[jsKey];
+    });
     fetch("/api/companies", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            Name: fields.name,
-            Website: fields.domain,
-            "Pre Notes": fields.preNotes,
-            "During Notes": fields.duringNotes,
-            "Booth Number": fields.boothNumber,
-            "Annual Revenue": fields.annualRevenue,
-            "Is a fit": fields.isAFit,
-            Priority: fields.priority,
-            Archived: fields.archived,
-        }),
+        body: JSON.stringify(postBody),
+    });
+};
+
+export const patchCompany = (id: string, fields: Partial<Company>) => {
+    const patchBody: Partial<Company> = {};
+    Object.entries(companyFieldNames).forEach(([jsKey, airtableKey]) => {
+        // @ts-ignore
+        if (fields[jsKey] === undefined) return;
+        // @ts-ignore
+        patchBody[airtableKey] = fields[jsKey];
+    });
+
+    console.log("patching company with id", id);
+
+    fetch("/api/companies", {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id, ...patchBody }),
     });
 };
 
 export const addContact = (fields: Contact) => {
+    const postBody: Partial<Contact> = {};
+    Object.entries(contactFieldNames).forEach(([jsKey, airtableKey]) => {
+        // @ts-ignore
+        postBody[airtableKey] = fields[jsKey];
+    });
     fetch("/api/contacts", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-            Email: fields.email,
-            "First Name": fields.firstName,
-            "Last Name": fields.lastName,
-            Id: fields.id,
-            Archived: fields.archived,
-            Status: fields.status,
-            "During Show Notes": fields.duringNotes,
-            "Job Title": fields.jobTitle,
-            "Linkedin Headshot URL": fields.linkedInHeadshotUrl,
-            "Linkedin URL": fields.linkedInUrl,
-            "Pre Show Notes": fields.preNotes,
-        }),
+        body: JSON.stringify(postBody),
+    });
+};
+
+export const patchContact = (id: string, fields: Partial<Contact>) => {
+    const patchBody: Partial<Contact> = {};
+    Object.entries(contactFieldNames).forEach(([jsKey, airtableKey]) => {
+        // @ts-ignore
+        if (fields[jsKey] === undefined) return;
+        // @ts-ignore
+        patchBody[airtableKey] = fields[jsKey];
+    });
+
+    fetch("/api/contacts", {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id, ...patchBody }),
     });
 };
