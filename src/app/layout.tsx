@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Cabin } from "next/font/google";
+import Head from "next/head";
 
 export const metadata: Metadata = {
     title: "LTO Show App",
@@ -16,6 +17,13 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
+            <Head>
+                <meta name="apple-mobile-web-app-capable" content="yes" />
+                <meta
+                    name="apple-mobile-web-app-status-bar-style"
+                    content="black-translucent"
+                />
+            </Head>
             <body className={cabin.className}>{children}</body>
         </html>
     );
