@@ -18,6 +18,7 @@ import FilterForm, { FilterConfig } from "./FilterForm";
 import { LoadingIndicator } from "./LoadingIndicator";
 import SortForm, { SortConfig } from "./SortForm";
 import { Modal } from "./Modal";
+import { Company } from "@/utils/api";
 
 export const SearchTabs = () => {
     const { loading: loadingCompanies, companies } = useCompanies();
@@ -182,8 +183,13 @@ export const SearchTabs = () => {
                 )}
                 {dataToShow.map((record) => (
                     <Link href={`/${activeTab}/${record.id}`} key={record.id}>
-                        <div className="flex flex-row gap-2 px-4 py-2 border border-gray-400 rounded-full hover:border-black cursor-pointer">
-                            {record.name}
+                        <div className="flex flex-row gap-2 px-4 py-2 border border-gray-400 rounded-full hover:border-black cursor-pointer justify-between items-center">
+                            <span>{record.name}</span>
+                            {(record as Company).boothNumber && (
+                                <span className="text-sm text-gray-500">
+                                    Booth {(record as Company).boothNumber}
+                                </span>
+                            )}
                         </div>
                     </Link>
                 ))}

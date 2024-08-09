@@ -16,26 +16,26 @@ export const Header = ({
     hideSearch?: boolean;
 }) => {
     return (
-        <div className="flex py-1 p-1 border-b border-gray-300 bg-white items-center sticky top-0 right-0 left-0">
+        <div className="flex py-1 p-1 border-b border-gray-300 bg-rose-600 items-center sticky top-0 right-0 left-0">
             {!hideBack && (
                 <button
-                    className="rounded-full absolute left-0.5 text-gray-800 flex items-center justify-center"
+                    className="rounded-full absolute left-0.5 text-white flex items-center justify-center"
                     onClick={() => window.history.back()}
                 >
                     <ArrowLeftCircleIcon className="h-8 w-8 stroke-1" />
                 </button>
             )}
-            <span className="mx-auto">LTO App</span>
+            <span className="mx-auto text-white">LTO App</span>
             {!hideSearch && (
                 <Link
                     href={"/"}
-                    className="rounded-full absolute right-8 ml-auto text-gray-800 flex items-center justify-center"
+                    className="rounded-full absolute right-8 ml-auto text-white flex items-center justify-center"
                 >
                     <MagnifyingGlassCircleIcon className="h-8 w-8 stroke-1" />
                 </Link>
             )}
             <Link
-                className="rounded-full absolute right-0.5 text-gray-800"
+                className="rounded-full absolute right-0.5 text-white"
                 href="/addNew"
             >
                 <PlusCircleIcon className="h-8 w-8 stroke-1" />
